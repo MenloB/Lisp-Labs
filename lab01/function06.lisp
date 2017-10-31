@@ -1,0 +1,6 @@
+(defun prebroj(l)
+	(if (null l) 
+		'() 
+		(append (cons (length (car l)) '()) (prebroj (cdr l)))
+	)
+)
