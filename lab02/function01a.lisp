@@ -1,0 +1,5 @@
+(defun izmesaj(l1 l2)
+  (cond ((null l1) '())
+        ((null l2) '())
+        ((< (car l1) (car l2)) (append (append (cons (car l1) '()) (list (car l2))) (izmesaj (cdr l1) (cdr l2))))
+        (t (append (cons (car l2) '()) (izmesaj (cdr l1) (cdr l2))))))
