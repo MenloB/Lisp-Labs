@@ -1,0 +1,5 @@
+(defun broj_pojavljivanja(el l)
+  (cond ((null l) '())
+        ((null el) '())
+        ((AND (atom (car l)) (equal el (car l))) (1+ (broj_pojavljivanja el (cdr l))))
+        ((AND t (member el (car l))) (1+ (broj_pojavljivanja el (cdr l))))))
