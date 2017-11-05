@@ -1,0 +1,10 @@
+(defun pomnozi(l1 l2) 
+  (cond ((null l1) '0)
+        ((null l2) '0)
+        (t (+ (* (car l1) (car l2)) (pomnozi (cdr l1) (cdr l2))))))
+
+(defun proizMV(l1 l2)
+  (cond ((null l1) '())
+        ((null l2) '())
+        ((equal (length (car l1)) (length l2)) (append (cons (pomnozi (car l1) l2) '()) (proizMV (cdr l1) l2)))
+        (t 'nije_definisano)))
