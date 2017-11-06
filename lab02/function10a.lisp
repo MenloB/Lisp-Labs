@@ -1,0 +1,5 @@
+(defun napravi(l1 l2)
+  (cond ((null l1) '())
+        ((null l2) '())
+        ((null (car l2)) (append (car l1) '()))
+        (t (append (list (append (cons (car l1) '()) (list (car l2))) (napravi (cdr l1) (cdr l2)))))))
