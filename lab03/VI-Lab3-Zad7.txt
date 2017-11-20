@@ -1,0 +1,78 @@
+Funkcija dodaj-potomke izdvaja listu cvorova potomaka zadatog cvora koji do poziva nisu obradeni algoritmom.     (dodaj-potomke graf cvor obradjeni_cvorovi)
+Ulazni parametri:
+Graf
+Cvor cije potomke treba izdvojiti (atom)
+Lista obradenih cvorova (lista atoma)
+
+(defun dodaj-potomke (graf cvor cvorovi)
+              (cond
+               ((null graf) '())
+               ((equal (caar graf) cvor)
+                (novi-cvorovi (cadar graf) cvorovi)) //(cadar graf) - lista potega 
+               (t (dodaj-potomke (cdr graf) cvor cvorovi))))      //trenutno obradivanog
+
+
+
+Funkcija novi-cvorovi vraca listu koja sadrži potomke koji do poziva funkcije nisu obradeni algoritmom.      (novi-cvorovi potomci obradjeni_cvorovi)
+Ulazni parametri:
+Lista cvorova potomaka (lista atom)
+Lista obradenih cvorova (lista atoma)
+
+(defun novi-cvorovi (potomci cvorovi)
+              (cond
+               ((null potomci) '())
+               ((member (car potomci) cvorovi) (novi-cvorovi (cdr potomci) cvorovi))
+               (t (cons (car potomci) (novi-cvorovi (cdr potomci) cvorovi)))))
+
+
+
+(defun nadji-put (graf l cilj cvorovi)
+               (cond
+                ((null l) '())
+                ((equal (car l) cilj) (list cilj))
+                (t (let* ((cvorovi1 (append cvorovi (list (car l))))
+                          (potomci1 (dodaj-potomke graf (car l) (append (cdr l) cvorovi1)))
+                          (l1 (append (cdr l) potomci1))
+                          (nadjeni-put (nadji-put graf l1 cilj cvorovi1)))
+                     (cond ((null nadjeni-put) '())
+                           ((member (car nadjeni-put) potomci1) (cons (car l) nadjeni-put))
+                           (t nadjeni-put))))))
+
+
+(defun nadji-sve (graf l cvorovi)
+              (cond
+               ((null l) cvorovi)
+               (t (let* ((cvorovi1 (append cvorovi (list (car l))))
+                         (potomci1 (dodaj-potomke graf (car l) (append (cdr l) cvorovi1)))
+                         (l1 (append (cdr l) potomci1)))
+                    (nadji-sve graf l1 cvorovi1)))))
+
+
+
+(defun heuristika (graf lista cilj cvorovi)
+              (cond
+               ((null lista) '())
+               (t (cons (1- (length (nadji-put graf (list (car lista)) cilj cvorovi))) (heuristika graf (cdr lista) cilj cvorovi)))))
+
+
+
+(defun spoji (cvorovi heuristike)
+               (cond
+                ((null cvorovi) '())
+                (t (cons (list (car cvorovi) (car heuristike)) (spoji (cdr cvorovi) (cdr heuristike))))))
+
+
+
+(defun kreiraj (graf l cilj cvor)
+               (cond
+                ((null graf) '())
+                (t (let* ((lista (nadji-sve graf l cvor)))
+                     (spoji lista (heuristika graf lista cilj cvor))))))
+
+
+
+(setq graf1 '((a (b c)) (b (d e)) (c (f g)) (d (h)) (e (h)) (f (h)) (g (h)) (h ())))
+
+
+
+(kreiraj graf1 '(a) 'h '())

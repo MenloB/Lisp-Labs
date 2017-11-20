@@ -1,0 +1,32 @@
+(defun jedan (graf graf1 el)
+ (cond ((null graf1) '())
+       (t (cond
+           ((equal (1- (length (nadji-put graf el (caar graf1) '()))) -1) (jedan graf (cdr graf1) el))       
+           (t (cons (list (caar graf1) (1- (length (nadji-put graf el (caar graf1) '())))) (jedan graf (cdr graf1) el))) 
+           ))
+       ))
+
+
+(defun nadji-put (graf l cilj cvorovi)
+  (cond ((null l) '())
+        ((equal (car l) cilj) (list cilj))
+        (t (let* ((cvorovi1 (append cvorovi (list (car l))))
+                  (potomci1 (dodaj-potomke graf (car l) (append (cdr l) cvorovi1)))
+                  (l1 (append (cdr l) potomci1))
+                  (nadjeni-put (nadji-put graf l1 cilj cvorovi1)))
+             (cond ((null nadjeni-put) '())
+                   ((member (car nadjeni-put) potomci1) (cons (car l) nadjeni-put))
+                   (t nadjeni-put))))))
+
+(defun dodaj-potomke (graf cvor cvorovi)
+  (cond ((null graf) '())
+        ((equal (caar graf) cvor)
+         (novi-cvorovi (cadar graf) cvorovi))
+        (t (dodaj-potomke (cdr graf) cvor cvorovi))))
+
+(defun novi-cvorovi (potomci cvorovi)
+  (cond ((null potomci) '())
+        ((member (car potomci) cvorovi)
+         (novi-cvorovi (cdr potomci) cvorovi))
+        (t (cons (car potomci)
+                 (novi-cvorovi (cdr potomci) cvorovi)))))
